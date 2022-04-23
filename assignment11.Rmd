@@ -1,0 +1,67 @@
+---
+title: "Assignment 11 Dashboards"
+author: "Cullen Kelley"
+date: "4/22/2022"
+output: flexdashboard::flex_dashboard
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(plotly)
+library(crosstalk)
+pokemon <- read_csv("pokemon.csv")
+shared_pokemon <- SharedData$new(pokemon)
+```
+
+```{r, echo=FALSE}
+#Ok this is not a amazing solution BUT it seems I've no choice.
+#pokeTemplate <- shared_pokemon
+#  colnames(pokeTemplate)[3] <- "Type_1"
+
+#typeColors <- as.character(c("Normal"="#a8a77a", "Fire"="#7b3294", "Water"="#6390f0","Electric"="#f7d02c","Grass"="#7ac74c","Ice"="#96d9d6","Fighting"="#c22e28","Poison"="#a33ea1","Ground"="#e2bf65","Flying"="#a98ff3","Psychic"="#f95587","Bug"="#a6b91a","Rock"="#b6a136","Ghost"="#735797","Dragon"="#6f35fc","Dark"="#705746","Steel"="#b7b7ce","Fairy"="#d685ad"))
+
+#ColorsScale <- scale_colour_manual(name=pokeTemplate[3], values=typeColors)
+#mutate(pokeTemplate, typeColor = )
+```
+
+
+## Sidebar {.sidebar}
+----------------------
+```{r,echo=FALSE}
+filter_select("poke_type", "Pokemon Type", shared_pokemon, ~`Type 1`)
+```
+
+
+Column
+-------------------------------------
+ 
+### Pokemon by primary type
+ 
+```{r, echo=FALSE}
+p <-shared_pokemon %>% 
+  ggplot()+
+  geom_boxplot(
+    mapping = aes(x=reorder(`Type 1`, Total, FUN = median), y = Total, fill = `Type 1`))+
+  labs(x = "Primary type")+
+  theme(axis.text.x=element_text(angle = 45, vjust = 0.5))
+ggplotly(p)
+```
+geom_boxplot(aes(x = reorder(Make, Price, FUN = median)
+ 
+Column
+-------------------------------------
+ 
+### Pokemon types stats
+ 
+```{r, echo=FALSE}
+p <- shared_pokemon %>%
+  ggplot()+
+  geom_point(
+    mapping = aes(x= Defense, y = Attack, color = `Type 1`)
+    )
+
+ggplotly(p)
+```
+
+
+
